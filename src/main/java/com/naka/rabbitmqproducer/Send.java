@@ -3,6 +3,9 @@ package com.naka.rabbitmqproducer;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 
 public class Send
 {
@@ -14,11 +17,14 @@ public class Send
         factory.setPassword(System.getenv().getOrDefault("RABBITMQ_PASSWORD", "guest"));
 
         int numOfMessages = Integer.parseInt(System.getenv().getOrDefault("NUM_OF_MESSAGES", "10"));
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
                 channel.queueDeclare(QUEUE_NAME, false, false, false, null);
                 for (int n = 1; n<=numOfMessages; n++) {
-                    String message = String.format("Message [%d/%d]", n, numOfMessages);
+                    Date date = new Date(System.currentTimeMillis());
+                    System.out.println(formatter.format(date));
+                    String message = String.format("%s [%d/%d]", formatter.format(date), n, numOfMessages);
                     channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
                     System.out.println("[x] Sent '" + message + "'");
                 }
