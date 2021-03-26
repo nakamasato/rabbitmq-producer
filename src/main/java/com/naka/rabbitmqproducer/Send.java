@@ -17,7 +17,7 @@ public class Send
         factory.setPassword(System.getenv().getOrDefault("RABBITMQ_PASSWORD", "guest"));
 
         int numOfMessages = Integer.parseInt(System.getenv().getOrDefault("NUM_OF_MESSAGES", "10"));
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
                 channel.queueDeclare(QUEUE_NAME, false, false, false, null);
